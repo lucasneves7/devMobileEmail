@@ -10,12 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +21,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -46,9 +43,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun ContentScreen(modifier: Modifier, context: Context){
+    // Verifica se a orientação é vertical ou horizontal
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
+    // Estados para os campos de texto 'rememberSaveable' para manter mesmo rotacionando.
     var email by rememberSaveable("email") { mutableStateOf("") }
     var topic by rememberSaveable("topic") { mutableStateOf("") }
     var message by rememberSaveable("message") { mutableStateOf("") }
@@ -100,12 +98,14 @@ private fun ContentScreen(modifier: Modifier, context: Context){
 
         Button(
             onClick = {
+                // Cria um Intent para enviar um e-mail
                 val intent = Intent(Intent.ACTION_SENDTO)
+                // Configura o e-mail
                 intent.data = android.net.Uri.parse("mailto:")
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                // Configura o assunto e a mensagem
                 intent.putExtra(Intent.EXTRA_SUBJECT, topic)
                 intent.putExtra(Intent.EXTRA_TEXT, message)
-
                 try {
                     context.startActivity(intent)
                 }catch (e: Exception){
